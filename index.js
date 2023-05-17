@@ -25,8 +25,8 @@
 //         req.decoded = decoded;
 //         next();
 //     })
-           
-              
+
+
 // }
 
 
@@ -40,7 +40,7 @@
 //             await client.connect();
 //             const serviceCollection = client.db('geniusCar').collection('service');
 //             const orderCollection = client.db('geniusCar').collection('order');
-            
+
 
 //             app.post('/login',async(req,res)=>{
 //                 const user = req.body;
@@ -98,7 +98,7 @@
 //                 const result =await orderCollection.insertOne(order);
 //                 res.send(result);
 //             })
-       
+
 
 //     }
 //     finally{
@@ -134,84 +134,88 @@ app.use(express.json());
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.hc9vrhc.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
-async function run(){
+async function run() {
 
-    try{
+    try {
         console.log('connencting client')
         await client.connect();
         console.log('client connected')
-        const productCollection = client.db('warehouse').collection('products');
 
 
-        app.get('/inventory',async(req,res)=>{
-          
-            const query = {};
-            const cursor = productCollection.find(query);
-            const invetories = await cursor.toArray();
-            res.send(invetories)
-        })
-        app.get('/order',async(req,res)=>{
-            const queryEmail = req.query.email;
-            console.log(queryEmail)
-            if(queryEmail){
-               
-              const query = {email:queryEmail};
-              const cursor = productCollection.find(query);
-              const orders = await cursor.toArray();
-              res.send(orders) 
-             
-              
-            }
-        })
 
-        app.get('/inventory/:id',async(req,res)=>{
-            const id = req.params.id;
-            const query = {_id: ObjectId (id)};
-            const service = await productCollection.findOne(query);
-            res.send(service);
-            
-        });
 
-                app.delete('/inventory/:id',async(req,res)=>{
-                const id = req.params.id;
-                const query = {_id:ObjectId(id)};
-                const service = await productCollection.deleteOne(query);
-                res.send(service);
-            })
 
-                app.post('/inventory',async(req,res)=>{
-                const order = req.body;
-                const service =await productCollection.insertOne(order);
-                res.send(service);
-            })
-
-            app.put('/inventory/:id',async(req,res)=>{
-                const {quantity} = req.body;
-                const  id = req.params.id;
-                const query = {_id:ObjectId(id)};
-                const result = await productCollection.updateOne(query,{$set:{quantity}},{upsert:false})
-                res.send(result);
-            })
-       
-    
     }
-    finally{
+    finally {
 
     }
 }
 run().catch(console.dir)
 
 
-app.get('/',(req , res)=>{
+const productCollection = client.db('warehouse').collection('products');
+
+app.get('/inventory', async (req, res) => {
+
+    const query = {};
+    const cursor = productCollection.find(query);
+    const invetories = await cursor.toArray();
+    res.send(invetories)
+})
+app.get('/order', async (req, res) => {
+    const queryEmail = req.query.email;
+    console.log(queryEmail)
+    if (queryEmail) {
+
+        const query = { email: queryEmail };
+        const cursor = productCollection.find(query);
+        const orders = await cursor.toArray();
+        res.send(orders)
+
+
+    }
+})
+
+app.get('/inventory/:id', async (req, res) => {
+    const id = req.params.id;
+    const query = { _id: ObjectId(id) };
+    const service = await productCollection.findOne(query);
+    res.send(service);
+
+});
+
+app.delete('/inventory/:id', async (req, res) => {
+    const id = req.params.id;
+    const query = { _id: ObjectId(id) };
+    const service = await productCollection.deleteOne(query);
+    res.send(service);
+})
+
+app.post('/inventory', async (req, res) => {
+    const order = req.body;
+    const service = await productCollection.insertOne(order);
+    res.send(service);
+})
+
+app.put('/inventory/:id', async (req, res) => {
+    const { quantity } = req.body;
+    const id = req.params.id;
+    const query = { _id: ObjectId(id) };
+    const result = await productCollection.updateOne(query, { $set: { quantity } }, { upsert: false })
+    res.send(result);
+})
+
+
+app.get('/', (req, res) => {
     res.send('running')
 });
-app.get('/route',(req , res)=>{
-    res.send({route:20})
+app.get('/route', (req, res) => {
+    res.send({ route: 20 })
 });
 
 
-app.listen(port,()=>{
-    console.log('shuntesi',port)
+app.listen(port, () => {
+    console.log('shuntesi', port)
 })
 
 
