@@ -135,8 +135,11 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 async function run(){
+
     try{
+        console.log('connencting client')
         await client.connect();
+        console.log('client connected')
         const productCollection = client.db('warehouse').collection('products');
 
 
@@ -202,8 +205,13 @@ run().catch(console.dir)
 app.get('/',(req , res)=>{
     res.send('running')
 });
+app.get('/route',(req , res)=>{
+    res.send({route:20})
+});
 
 
 app.listen(port,()=>{
     console.log('shuntesi',port)
 })
+
+
